@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+	
+    <title>Random Artist Selector</title>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th, thead {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+thead {
+	background-color: aquamarine;
+}
+
+</style>
+
+<script>
+function getTracks(){
+   // create a new xhr request element
+   var XHR = new XMLHttpRequest();
+   
+   //add event listener for processing successful response
+   XHR.addEventListener( "load", function(event) {
+      document.getElementById('resultBody').outerHTML = event.target.responseText;
+	  document.getElementById('resTable').style.display = "block";
+	  document.getElementById('tbtn').style.display = "none"
+    } );
+    
+    //add event listener for error handling
+    XHR.addEventListener( "error", function( event ) {
+      alert( 'Oops! Something went wrong.' );
+    } );
+    
+    var url = "getTracks/" + document.getElementById("artistId").value;
+
+    // Set up our request	
+    XHR.open( "GET", url );    
+    // The data sent is what the user provided in the form
+    XHR.send();
+
+}
+</script>
+
+
+  </head>
+
+  <body>
+
+    <div class="container"><form style=""></form>
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills float-right">
+            <li class="nav-item">
+              
+            </li>
+            <li class="nav-item">
+              
+            </li>
+            <li class="nav-item">
+              
+            </li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Random Artist Selector</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1 class="display-3">Don't know what to listen to?</h1>
+        <p class="lead">Just select the decade and I choose the artist/band for you. You don't get to choose the genre.</p>
+        
+      </div>
+
+	<div>
+		<div class="card" style="">		  		  
+			<div class="card-body">			
+				<h4 class="card-title">Hurrah! You'll be listening to:</h4>			
+				<h4><a href=#[payload.artistLink]>#[payload.artistName]</a></h4>
+				<input type="hidden" id="artistId" name="artistId" value=#[payload.artistId]>
+				
+				<br>
+				<button class="btn btn-success" id="tbtn" onclick="getTracks()" type="submit">Get Top Tracks!</button>
+				<div id="resTable" style="display:none">
+					<h4>Here are the top tracks to get you started!</h4>		
+					<table class="table table-primary">
+					   <thead>
+					      <tr>
+					         <th>#</th>
+					         <th>Track Name</th>
+					         <th>Preview</th>
+					      </tr>
+					   </thead>
+					  <tbody id="resultBody">
+					   </tbody>
+				   </div>
+				</table>
+				<!--<a href="" class="btn btn-primary">Check out the artist</a>-->		  
+			</div>		
+		</div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+      <footer class="footer">
+        <p>Generic footer element, I didn't choose to be here.</p>
+      </footer>
+
+    </div> <!-- /container -->
+  
+
+</body>
+</html>

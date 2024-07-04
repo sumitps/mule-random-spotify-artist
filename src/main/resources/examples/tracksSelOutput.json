@@ -1,0 +1,64 @@
+{
+    "tracks": [
+        {
+            "index": 0,
+            "name": "Get Up Offa That Thing",
+            "id": "3whRKAOlJ0M3banzcChvQv",
+            "link": "https://api.spotify.com/v1/tracks/3whRKAOlJ0M3banzcChvQv"
+        },
+        {
+            "index": 1,
+            "name": "The Boss",
+            "id": "6LzjgzpVl0hB3YrBU1b8Z1",
+            "link": "https://api.spotify.com/v1/tracks/6LzjgzpVl0hB3YrBU1b8Z1"
+        },
+        {
+            "index": 2,
+            "name": "People Get Up And Drive Your Funky Soul - Remix",
+            "id": "5U3i59kbTLrxo46TU1FRnF",
+            "link": "https://api.spotify.com/v1/tracks/5U3i59kbTLrxo46TU1FRnF"
+        },
+        {
+            "index": 3,
+            "name": "Get Up (I Feel Like Being A) Sex Machine - Pt. 1 & 2",
+            "id": "7tMCIOFe99cWEYr21wfsDp",
+            "link": "https://api.spotify.com/v1/tracks/7tMCIOFe99cWEYr21wfsDp"
+        },
+        {
+            "index": 4,
+            "name": "Unchained (The Payback / Untouchable)",
+            "id": "47Zqlw3jmibtVPy8usPjBj",
+            "link": "https://api.spotify.com/v1/tracks/47Zqlw3jmibtVPy8usPjBj"
+        },
+        {
+            "index": 5,
+            "name": "The Payback",
+            "id": "5OcyX5eg7VrJuI833qOCUc",
+            "link": "https://api.spotify.com/v1/tracks/5OcyX5eg7VrJuI833qOCUc"
+        },
+        {
+            "index": 6,
+            "name": "Try Me",
+            "id": "31usEzDUXeGWAheRaCeEaD",
+            "link": "https://api.spotify.com/v1/tracks/31usEzDUXeGWAheRaCeEaD"
+        },
+        {
+            "index": 7,
+            "name": "Living in America - From \"Rocky IV\" Soundtrack",
+            "id": "2J1IYUHS1XXyd2NepfTlco",
+            "link": "https://api.spotify.com/v1/tracks/2J1IYUHS1XXyd2NepfTlco"
+        },
+        {
+            "index": 8,
+            "name": "Papa's Got A Brand New Bag",
+            "id": "6v4gV9s0pnwKbmF1yk5knO",
+            "link": "https://api.spotify.com/v1/tracks/6v4gV9s0pnwKbmF1yk5knO"
+        },
+        {
+            "index": 9,
+            "name": "It's A Man's, Man's, Man's World",
+            "id": "3BcH252CGECgOWfKBjAaBC",
+            "link": "https://api.spotify.com/v1/tracks/3BcH252CGECgOWfKBjAaBC"
+        }
+    ]
+}

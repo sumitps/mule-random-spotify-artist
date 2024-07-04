@@ -1,0 +1,5 @@
+spotify:
+  apiHost: "api.spotify.com"
+  tokenHost: "accounts.spotify.com" 
+  clientId: "![rTFHT4oiPhy3Okcsk7v/mdlhRXgsD2PCdpeP4QaHiAQ0SzLPhSJTcg==]"
+  clientSecret: "![ru0KzN3zoMnw8W2GgeE2W+ovgVX9qUXh2sKgr0upqyS8qnqvVjeNWw==]"

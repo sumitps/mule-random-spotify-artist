@@ -1,0 +1,74 @@
+#%RAML 1.0
+title: random-artist-selector-api
+
+/:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              msg: 'Success'
+      429:
+        body:
+          application/json:
+            example:
+              msg: Too many attempts, please try after some time
+      400:
+        body:
+          application/json:
+            example:
+              msg: Bad Request!
+      404:
+        body:
+          application/json:
+            example:
+              msg: Sorry, unable to find the resource you are trying to access!
+
+/{decade}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              msg: 'Success'
+      429:
+        body:
+          application/json:
+            example:
+              msg: Too many attempts, please try after some time
+      400:
+        body:
+          application/json:
+            example:
+              msg: Bad Request!
+      404:
+        body:
+          application/json:
+            example:
+              msg: Sorry, unable to find the resource you are trying to access!
+/getTracks/{artistId}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              msg: 'Success'
+      429:
+        body:
+          application/json:
+            example:
+              msg: Too many attempts, please try after some time
+      400:
+        body:
+          application/json:
+            example:
+              msg: Bad Request!
+      404:
+        body:
+          application/json:
+            example:
+              msg: Sorry, unable to find the resource you are trying to access!
+            

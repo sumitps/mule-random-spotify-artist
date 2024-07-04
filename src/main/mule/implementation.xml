@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	
+	<http:request-config name="spotifyToken" doc:name="HTTP Request configuration" doc:id="0a36cdd6-1e7f-4200-b33e-6070a7dabdcc">
+		<http:request-connection protocol="HTTPS" host="${secure::spotify.tokenHost}" usePersistentConnections="false"/>
+	</http:request-config>
+	<http:request-config name="spotifyDetailAPIReq" doc:name="HTTP Request configuration" doc:id="a96d9b3d-2c6a-4372-a480-59ddb14612be" >
+		<http:request-connection host="${secure::spotify.apiHost}" usePersistentConnections="false"/>
+	</http:request-config>
+	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="bfeb280b-dd8e-4c9a-9fab-4b87dff03817" >
+		<os:connection />
+	</os:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0c8ab1af-8eb1-48a3-828b-444760eaed1a" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<os:config name="spotifyTokenStoreConfig" doc:name="ObjectStore Config" doc:id="86b824d7-d4cd-4219-a946-9c80ef03bf74" >
+		<os:connection />
+	</os:config>
+	<ee:object-store-caching-strategy name="authTokenCachingStrategy" doc:name="Caching Strategy" doc:id="129f8062-4349-47f3-8969-45cc83f5f362" keyGenerationExpression="spotifyAccessToken">
+		<os:private-object-store alias="spotifyTokenStore" maxEntries="1" entryTtl="50" expirationInterval="5" config-ref="spotifyTokenStoreConfig" entryTtlUnit="MINUTES"/>
+	</ee:object-store-caching-strategy>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="950ff22a-ea78-486c-a03d-a3155fc21807" file="config.yaml" key="${mule.key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<flow name="getTopTracksFlow" doc:id="cbe88213-ffca-4f0b-a1c8-62d7823f1b47">
+		<flow-ref doc:name="Retrieve Access Token" doc:id="6bca2c0c-6125-44be-af32-c212f418a43c" name="retrieveAccessToken" target="accessToken" />
+		<http:request method="GET" doc:name="Search for top tracks(Spotify API)" doc:id="1367c0a7-3100-48d2-8481-e4da5d47c358" config-ref="spotifyDetailAPIReq" path="/v1/artists/{artistId}/top-tracks">
+			<http:headers><![CDATA[#[%dw 2.0
+output application/java
+
+---
+{
+	"Authorization" : "Bearer " ++ vars.accessToken as String
+}]]]></http:headers>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	artistId : vars.artistId as String
+}]]]></http:uri-params>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"country" : "US"
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Map Spotify Response" doc:id="c3c5fa15-b78e-44a4-b951-3e71793a2a63">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml writeDeclaration=false
+---
+tbody
+: {
+	tr: payload.tracks map ((val,ind) -> {
+		th: ind as Number + 1,
+		td: a @(href: val.external_urls.spotify,target:"_blank"): val.name,
+        (if(val.preview_url != null) (td: audio @(controls: ""): 
+            source @(src: val.preview_url,"type":"audio/mp3"):"") else td:"No preview available"),
+            
+	})
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="loadIndexPageFlow" doc:id="c6f21bb6-3c08-4ec1-9e5a-1eaf8e08d8aa" >
+		<http:load-static-resource doc:name="Load Index Page" doc:id="b9846d12-2864-47f1-96d9-005c50a29a5a" resourceBasePath="${mule.home}/apps/${app.name}/Site/index.html" />
+	</flow>
+	<flow name="getRandomArtistFlow" doc:id="bd890ed9-2918-4b56-9fa1-7b0bce49520e" >
+		<flow-ref doc:name="Retrieve Access Token" doc:id="c0afa625-4355-47dc-a5d1-2af69d7c5a55" name="retrieveAccessToken" target="accessToken" />
+		<http:request method="GET" doc:name="Search Spotify" doc:id="229ccb1e-493c-4339-ba12-6494330df194" config-ref="spotifyDetailAPIReq" path="/v1/search">
+			<http:headers><![CDATA[#[%dw 2.0
+output application/java
+
+---
+{
+	"Authorization" : "Bearer " ++ vars.accessToken as String
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/x-www-form-urlencoded
+var decade = vars.decade as Number default 1950
+---
+{
+	"q" : 'year%3A' ++ decade ++ '-' ++ (decade+10),
+	"type" : "artist"
+}]]]></http:query-params>
+		</http:request>
+		<http:request method="GET" doc:name="Search Spotify with Offset" doc:id="3429985e-8fcc-4306-b831-3914680f0ac5" config-ref="spotifyDetailAPIReq" path="/v1/search">
+			<http:headers><![CDATA[#[%dw 2.0
+output application/java
+
+---
+{
+	"Authorization" : "Bearer " ++ vars.accessToken as String
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/x-www-form-urlencoded
+var decade = vars.decade as Number default 1950
+---
+{
+	"q" : 'year%3A' ++ decade ++ '-' ++ (decade+10),
+	"limit" : 1,
+	"offset": randomInt(payload.artists.total),
+	"type" : "artist"
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Map Artist Details" doc:id="3800c6ef-803c-4de9-aa7d-8e5c108c312d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	artistId: (payload.artists.items[0].id),
+	artistName: (payload.artists.items[0].name),
+	artistLink: (payload.artists.items[0].external_urls.spotify)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Artist Found" doc:id="718a119c-bb56-4dbe-89f7-b895e90a613a" message="Found Artist: #[output application/json --- payload]" />
+		<parse-template doc:name="Parse Template - Random Artist" doc:id="39d5f257-87a8-43f4-bbbc-73de2e991256" location="Site\result.html" />
+	
+</flow>
+	<flow name="retrieveAccessToken" doc:id="d2376e8c-e55f-4c8d-b31e-995236649d16" >
+		<ee:cache doc:name="Token Cache" doc:id="81eea7fb-9863-45b6-8f7b-b7fff053555c" cachingStrategy-ref="authTokenCachingStrategy">
+			<http:request method="POST" doc:name="Request for new token" doc:id="c0791d47-c4d8-4308-8dea-8bad2a46fb1a" config-ref="spotifyToken" path="/api/token">
+			<http:body><![CDATA[#[output application/x-www-form-urlencoded
+---
+{
+	grant_type:'client_credentials',
+    client_id: Mule::p('secure::spotify.clientId'),
+	client_secret: Mule::p('secure::spotify.clientSecret')
+}]]]></http:body>
+		</http:request>
+			<set-payload value="#[payload.access_token]" doc:name="Set Token as Payload" doc:id="6c63a626-e1ce-4922-a83a-6fd30777c193" />
+		
+</ee:cache>
+	</flow>
+</mule>

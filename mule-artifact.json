@@ -1,0 +1,8 @@
+{
+  "minMuleVersion": "4.4.0",
+  "secureProperties": [
+  	"mule.key",
+  	"spotify.clientId",
+  	"spotify.clientSecret"
+  ]
+}

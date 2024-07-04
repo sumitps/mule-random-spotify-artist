@@ -1,0 +1,54 @@
+{
+  "artists": {
+    "href": "https://api.spotify.com/v1/search?query=James+Brown&type=artist&offset=0&limit=1",
+    "items": [
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/7GaxyUddsPok8BuhxN6OUW"
+        },
+        "followers": {
+          "href": null,
+          "total": 1472326
+        },
+        "genres": [
+          "funk",
+          "motown",
+          "soul"
+        ],
+        "href": "https://api.spotify.com/v1/artists/7GaxyUddsPok8BuhxN6OUW",
+        "id": "7GaxyUddsPok8BuhxN6OUW",
+        "images": [
+          {
+            "height": 1228,
+            "url": "https://i.scdn.co/image/5b9eeb6ce3dcfe08218098a78565fbf214034a5e",
+            "width": 1000
+          },
+          {
+            "height": 786,
+            "url": "https://i.scdn.co/image/8590cf083b8ab7c1e13128e6f306a879e47ae49c",
+            "width": 640
+          },
+          {
+            "height": 246,
+            "url": "https://i.scdn.co/image/77e8a495845543e1a298c7c5a5d047d52ce535d9",
+            "width": 200
+          },
+          {
+            "height": 79,
+            "url": "https://i.scdn.co/image/d6ed5fe143dfd0e4d523d23801e528a3a4f6a5fe",
+            "width": 64
+          }
+        ],
+        "name": "James Brown",
+        "popularity": 66,
+        "type": "artist",
+        "uri": "spotify:artist:7GaxyUddsPok8BuhxN6OUW"
+      }
+    ],
+    "limit": 1,
+    "next": "https://api.spotify.com/v1/search?query=James+Brown&type=artist&offset=1&limit=1",
+    "offset": 0,
+    "previous": null,
+    "total": 59
+  }
+}
